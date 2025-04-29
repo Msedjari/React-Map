@@ -1,0 +1,200 @@
+/* Diseño de la Aplicación
+   ========================================================================== */
+.app-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Contenedor del mapa principal */
+.map-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+.fullscreen-map {
+  height: 100vh !important;
+  width: 100vw !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Controles sobre el mapa */
+.map-controls {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: 90%;
+  max-width: 700px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+/* Contenedor de búsqueda */
+.search-container {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-color: #3498db;
+}
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+.search-button:hover {
+  background-color: #2980b9;
+}
+
+/* Paneles de Información
+   ========================================================================== */
+.info-panel {
+  position: absolute;
+  top: 80px;
+  z-index: 990;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 350px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  pointer-events: none;
+}
+
+.info-panel > * {
+  pointer-events: auto;
+}
+
+.weather-panel {
+  left: 10px;
+}
+
+.fields-panel {
+  right: 10px;
+}
+
+/* Mensajes y Notificaciones
+   ========================================================================== */
+.locating-message {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin-left: var(--spacing-sm);
+}
+
+.locating-message .loading-spinner-small {
+  margin-right: var(--spacing-xs);
+}
+
+.search-error {
+  color: var(--color-error);
+  background-color: rgba(231, 76, 60, 0.1);
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+  margin-top: var(--spacing-xs);
+}
+
+/* Pie de página
+   ========================================================================== */
+.app-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 900;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.8rem;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.footer-credits {
+  font-size: 0.8rem;
+  color: var(--color-text-light);
+}
+
+.footer-credits a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-credits a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+}
+
+/* Ajustes Responsivos
+   ========================================================================== */
+@media (max-width: 768px) {
+  .map-controls {
+    width: calc(100% - 20px);
+  }
+  
+  .info-panel {
+    width: 100%;
+    max-width: 100%;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: 50vh;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+    background-color: white;
+    padding: var(--spacing-md);
+  }
+  
+  .app-footer {
+    display: none;
+  }
+} 

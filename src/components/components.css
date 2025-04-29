@@ -1,0 +1,428 @@
+/* Estilos de Componentes
+   ========================================================================== */
+
+/* Panel del Clima 
+   ---------------------------------------- */
+.weather-info {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-md);
+  max-width: 350px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Estados de carga y error */
+.weather-info.loading, 
+.weather-info.error,
+.fields-list.loading,
+.fields-list.error,
+.fields-list.empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-lg);
+  text-align: center;
+  min-height: 150px;
+}
+
+.weather-info.error,
+.fields-list.error {
+  color: var(--color-error);
+  background-color: rgba(231, 76, 60, 0.05);
+}
+
+/* Estado vacío */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-md) 0;
+  color: var(--color-text-light);
+}
+
+/* Detalles del clima */
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.weather-icon {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.weather-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.weather-temp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.temp-value {
+  font-size: 2rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.feels-like {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+.weather-condition {
+  margin: 0 0 var(--spacing-md);
+  font-weight: var(--font-weight-medium);
+  text-align: center;
+}
+
+.weather-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-sm);
+}
+
+.weather-detail-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: var(--color-background-alt);
+  border-radius: var(--border-radius-sm);
+  font-size: 0.9rem;
+}
+
+/* Lista de Campos de Fútbol
+   ---------------------------------------- */
+.fields-list {
+  background-color: white;
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+  max-width: 350px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.fields-count {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* Elemento de campo de fútbol */
+.field-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  padding: var(--spacing-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: pointer;
+  background-color: white;
+}
+
+.field-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.field-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-sm);
+}
+
+.field-header h3, .field-header h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.distance-badge {
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-medium);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-address {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-sm);
+}
+
+.field-address p {
+  margin: 0;
+}
+
+/* Características y atributos del campo */
+.field-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.feature-type {
+  font-size: 0.7rem;
+  background-color: var(--color-background-alt);
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-details {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--spacing-sm);
+  font-size: 0.85rem;
+}
+
+.surface-type {
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.field-attributes {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.field-attribute {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  gap: 4px;
+}
+
+.field-attribute.indoor {
+  color: var(--color-primary);
+}
+
+.field-attribute.lighting {
+  color: var(--color-warning);
+}
+
+.cost-info {
+  margin-top: var(--spacing-sm);
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Barra de Búsqueda
+   ---------------------------------------- */
+.search-bar-container {
+  width: 100%;
+  position: relative;
+}
+
+.search-form {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: var(--color-text-light);
+  z-index: 1;
+}
+
+.search-input {
+  flex-grow: 1;
+  padding: 12px 15px 12px 35px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.clear-button {
+  position: absolute;
+  right: 10px;
+  border: none;
+  background: none;
+  color: var(--color-text-light);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background-color var(--transition-fast);
+}
+
+.clear-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Botones de búsqueda y ubicación */
+.search-button, 
+.location-button {
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--spacing-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.search-button {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.search-button:hover,
+.location-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.location-button {
+  background-color: var(--color-secondary);
+  color: white;
+  width: 40px;
+  height: 40px;
+}
+
+/* Búsquedas recientes */
+.recent-searches {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-md);
+  margin-top: 8px;
+  z-index: 10;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.recent-searches-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+.clear-all-button {
+  border: none;
+  background: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 4px;
+}
+
+.clear-all-button:hover {
+  text-decoration: underline;
+}
+
+.recent-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.recent-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.recent-item:hover {
+  background-color: var(--color-background-alt);
+}
+
+/* Estilos para iconos de marcadores del mapa */
+.custom-div-icon {
+  background: none !important;
+  border: none !important;
+}
+
+.custom-popup {
+  padding: var(--spacing-xs);
+}
+
+.popup-title {
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+  font-weight: var(--font-weight-medium);
+}
+
+.popup-content {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+/* Ajustes Responsivos
+   ---------------------------------------- */
+@media (max-width: 768px) {
+  .weather-info, .fields-list {
+    width: 100%;
+    max-width: none;
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  }
+  
+  .weather-details-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+} 
