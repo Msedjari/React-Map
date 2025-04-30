@@ -11,7 +11,7 @@ import {
   getCurrentLocation,
   getCityFromCoordinates
 } from './services/api';
-import { WeatherData, FootballField } from './types';
+import { WeatherData, SportifField } from './types';
 
 /**
  * Tipo para los marcadores del mapa
@@ -27,8 +27,8 @@ function App() {
   const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
   const FOOTBALL_FIELDS_API_KEY = import.meta.env.VITE_FOURSQUARE_API_KEY;
 
-  // Estado para el centro y zoom del mapa
-  const [mapCenter, setMapCenter] = useState<[number, number]>([41.3874, 2.1686]); // Barcelona por defecto
+  // Estado para el mapa
+  const [mapCenter, setMapCenter] = useState<[number, number]>([41.3874, 2.1686]);
   const [mapZoom, setMapZoom] = useState(13);
   
   // Estado para la búsqueda
@@ -44,7 +44,7 @@ function App() {
   const [weatherError, setWeatherError] = useState<string | null>(null);
   
   // Estado para los campos de fútbol
-  const [footballFields, setFootballFields] = useState<FootballField[]>([]);
+  const [fields, setFields] = useState<SportifField[]>([]);
   const [fieldsLoading, setFieldsLoading] = useState(false);
   const [fieldsError, setFieldsError] = useState<string | null>(null);
   
@@ -54,19 +54,14 @@ function App() {
   const handleCitySearch = async (cityName: string) => {
     try {
       setSearchError(null);
-      
-      // Mostrar estado de carga
       setWeatherLoading(true);
       setFieldsLoading(true);
       
-      // Geocodificar el nombre de la ciudad para obtener coordenadas
       const geocodingResult = await geocodeCity(cityName);
       
-      // Actualizar centro y zoom del mapa
       setMapCenter([geocodingResult.lat, geocodingResult.lon]);
-      setMapZoom(12); // Zoom adecuado para vista de ciudad
+      setMapZoom(12);
       
-      // Obtener datos para la nueva ubicación
       await fetchWeatherData(geocodingResult.lat, geocodingResult.lon);
       await fetchFootballFields(geocodingResult.lat, geocodingResult.lon);
     } catch (error) {
@@ -83,23 +78,17 @@ function App() {
     try {
       setIsLocating(true);
       setSearchError(null);
-      
-      // Mostrar estados de carga
       setWeatherLoading(true);
       setFieldsLoading(true);
       
-      // Obtener ubicación actual del usuario
       const position = await getCurrentLocation();
       const { lat, lon } = position;
       
-      // Obtener nombre de ciudad desde coordenadas (geocodificación inversa)
-      const locationInfo = await getCityFromCoordinates(lat, lon);
+      await getCityFromCoordinates(lat, lon);
       
-      // Actualizar centro y zoom del mapa
       setMapCenter([lat, lon]);
-      setMapZoom(13); // Zoom adecuado para ubicación actual
+      setMapZoom(13);
       
-      // Obtener datos para la ubicación actual
       await fetchWeatherData(lat, lon);
       await fetchFootballFields(lat, lon);
       
@@ -119,15 +108,12 @@ function App() {
     const { lat, lng } = latlng;
     setMapCenter([lat, lng]);
     
-    // Obtener datos meteorológicos
     fetchWeatherData(lat, lng);
-    
-    // Obtener campos de fútbol
     fetchFootballFields(lat, lng);
   };
   
   /**
-   * Obtiene datos meteorológicos de la API
+   * Obtiene datos meteorológicos
    */
   const fetchWeatherData = async (lat: number, lng: number) => {
     setWeatherLoading(true);
@@ -135,7 +121,7 @@ function App() {
     
     try {
       if (!WEATHER_API_KEY) {
-        setWeatherError('No se ha configurado una clave de API para el servicio meteorológico. Verifica tu configuración.');
+        setWeatherError('No se ha configurado una clave de API para el servicio meteorológico.');
         setWeatherData(null);
         return;
       }
@@ -143,7 +129,6 @@ function App() {
       const data = await getWeatherByLocation(lat, lng);
       setWeatherData(data);
       
-      // Actualizar marcadores con el marcador meteorológico
       updateMarkers(lat, lng, data.location.name, 'weather');
     } catch (error) {
       setWeatherError('Error al obtener datos meteorológicos. Por favor, inténtelo de nuevo más tarde.');
@@ -154,7 +139,7 @@ function App() {
   };
   
   /**
-   * Obtiene campos de fútbol de la API
+   * Obtiene campos de fútbol
    */
   const fetchFootballFields = async (lat: number, lng: number) => {
     setFieldsLoading(true);
@@ -162,21 +147,19 @@ function App() {
     
     try {
       if (!FOOTBALL_FIELDS_API_KEY) {
-        setFieldsError('No se ha configurado una clave de API para el servicio de campos de fútbol. Verifica tu configuración.');
-        setFootballFields([]);
+        setFieldsError('No se ha configurado una clave de API para el servicio de campos de fútbol.');
+        setFields([]);
         return;
       }
       
       const data = await getFootballFields(lat, lng);
       
-      // Si no se encontraron campos, mostrar mensaje informativo
       if (data.length === 0) {
         setFieldsError('No se encontraron campos de fútbol cercanos a esta ubicación');
       }
       
-      setFootballFields(data);
+      setFields(data);
       
-      // Añadir marcadores de campos de fútbol
       const newMarkers: MarkerType[] = data.map(field => ({
         position: [field.FieldInfo.Latitude, field.FieldInfo.Longitude] as [number, number],
         popup: `${field.FieldInfo.Name} - ${field.SurfaceType}${field.IsIndoor ? ' (Cubierto)' : ''}${field.HasLighting ? ' (Iluminación)' : ''}`,
@@ -184,13 +167,12 @@ function App() {
       }));
       
       setMarkers(prev => {
-        // Mantener el marcador meteorológico si existe
         const weatherMarker = prev.find(m => m.type === 'weather');
         return weatherMarker ? [...newMarkers, weatherMarker] : newMarkers;
       });
     } catch (error) {
       setFieldsError('Error al obtener campos de fútbol. Por favor, inténtelo de nuevo más tarde.');
-      setFootballFields([]);
+      setFields([]);
     } finally {
       setFieldsLoading(false);
     }
@@ -201,10 +183,8 @@ function App() {
    */
   const updateMarkers = (lat: number, lng: number, name: string, type: 'weather' | 'football') => {
     setMarkers(prev => {
-      // Eliminar marcadores anteriores del mismo tipo
       const filteredMarkers = prev.filter(m => m.type !== type);
       
-      // Añadir nuevo marcador
       const newMarker: MarkerType = {
         position: [lat, lng],
         popup: `${name} - ${type === 'weather' ? 'Información meteorológica' : 'Campo de fútbol'}`,
@@ -218,11 +198,11 @@ function App() {
   /**
    * Maneja la selección de un campo
    */
-  const handleFieldSelect = (field: FootballField) => {
+  const handleFieldSelect = (field: SportifField) => {
     const lat = field.FieldInfo.Latitude;
     const lng = field.FieldInfo.Longitude;
     setMapCenter([lat, lng]);
-    setMapZoom(15); // Hacer zoom cuando se selecciona un campo
+    setMapZoom(15);
   };
 
   return (
@@ -261,7 +241,6 @@ function App() {
         )}
       </div>
       
-      {/* Panel de información meteorológica */}
       <div className="info-panel weather-panel">
         <WeatherDisplay 
           weatherData={weatherData}
@@ -270,10 +249,9 @@ function App() {
         />
       </div>
       
-      {/* Panel de campos de fútbol */}
       <div className="info-panel fields-panel">
         <FootballFieldsList 
-          fields={footballFields}
+          fields={fields}
           isLoading={fieldsLoading}
           error={fieldsError}
           onFieldSelect={handleFieldSelect}

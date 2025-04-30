@@ -5,7 +5,7 @@ import '../components/components.css';
 import { useEffect } from 'react';
 import L from 'leaflet';
 
-// Solucionar el problema de los iconos por defecto en react-leaflet
+// Iconos para los marcadores
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import iconRetina from 'leaflet/dist/images/marker-icon-2x.png';
@@ -38,7 +38,7 @@ interface SetViewProps {
 }
 
 /**
- * Componente para manejar cambios en la vista del mapa
+ * Componente para actualizar la vista del mapa
  */
 const SetViewOnChange = ({ center, zoom }: SetViewProps) => {
   const map = useMap();
@@ -58,7 +58,7 @@ interface MapEventsProps {
 }
 
 /**
- * Componente para manejar eventos de clic en el mapa
+ * Componente para manejar eventos de clic
  */
 const MapEvents = ({ onClick }: MapEventsProps) => {
   useMapEvents({
@@ -69,7 +69,7 @@ const MapEvents = ({ onClick }: MapEventsProps) => {
   return null;
 };
 
-// Configuración del icono de marcador por defecto
+// Icono de marcador predeterminado
 const DefaultIcon = new Icon({
   iconUrl: icon,
   iconRetinaUrl: iconRetina,
@@ -79,7 +79,7 @@ const DefaultIcon = new Icon({
   popupAnchor: [1, -34],
 });
 
-// Icono personalizado para marcador de clima
+// Icono para marcador de clima
 const WeatherIcon = new DivIcon({
   className: 'custom-div-icon',
   html: `
@@ -105,7 +105,7 @@ const WeatherIcon = new DivIcon({
   popupAnchor: [0, -20]
 });
 
-// Icono personalizado para marcador de campo de fútbol
+// Icono para marcador de campo de fútbol
 const FootballIcon = new DivIcon({
   className: 'custom-div-icon',
   html: `
@@ -132,7 +132,7 @@ const FootballIcon = new DivIcon({
   popupAnchor: [0, -20]
 });
 
-// Estilos personalizados para el componente del mapa
+// Estilos del mapa
 const mapStyle = {
   height: '100vh',
   width: '100%', 
@@ -140,7 +140,7 @@ const mapStyle = {
   zIndex: 1
 };
 
-// Estilos personalizados para los popups del mapa
+// Estilos para los popups
 const customPopupStyle = `
   .leaflet-popup-content-wrapper {
     background-color: white;
@@ -178,10 +178,10 @@ const customPopupStyle = `
 `;
 
 /**
- * Componente principal del mapa
+ * Componente del mapa
  */
 const Map = ({ center, zoom, markers = [], onMapClick }: MapProps) => {
-  // Insertar CSS personalizado para el mapa
+  // Insertar estilos CSS personalizados
   useEffect(() => {
     const styleElement = document.createElement('style');
     styleElement.innerHTML = customPopupStyle;
@@ -194,7 +194,7 @@ const Map = ({ center, zoom, markers = [], onMapClick }: MapProps) => {
   }, []);
 
   /**
-   * Determina qué icono usar según el tipo de marcador
+   * Selecciona el icono según el tipo de marcador
    */
   const getMarkerIcon = (type?: 'football' | 'weather') => {
     switch (type) {
@@ -216,22 +216,15 @@ const Map = ({ center, zoom, markers = [], onMapClick }: MapProps) => {
       attributionControl={false}
       className="fullscreen-map"
     >
-      {/* Capa base del mapa */}
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       
-      {/* Controles de zoom en la esquina inferior derecha */}
       <ZoomControl position="bottomright" />
-      
-      {/* Componente para actualizar la vista cuando cambia el centro o el zoom */}
       <SetViewOnChange center={center} zoom={zoom} />
-      
-      {/* Componente para manejar eventos de clic */}
       {onMapClick && <MapEvents onClick={onMapClick} />}
       
-      {/* Marcadores en el mapa */}
       {markers.map((marker, idx) => (
         <Marker 
           key={idx} 

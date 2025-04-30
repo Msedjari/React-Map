@@ -14,7 +14,6 @@ interface WeatherDisplayProps {
  * Componente que muestra la información meteorológica
  */
 const WeatherDisplay = ({ weatherData, isLoading, error }: WeatherDisplayProps) => {
-  // Estado de carga
   if (isLoading) {
     return (
       <div className="weather-info loading">
@@ -24,7 +23,6 @@ const WeatherDisplay = ({ weatherData, isLoading, error }: WeatherDisplayProps) 
     );
   }
 
-  // Estado de error
   if (error) {
     return (
       <div className="weather-info error">
@@ -38,7 +36,6 @@ const WeatherDisplay = ({ weatherData, isLoading, error }: WeatherDisplayProps) 
     );
   }
 
-  // Estado sin datos
   if (!weatherData) {
     return (
       <div className="weather-info">
@@ -55,16 +52,15 @@ const WeatherDisplay = ({ weatherData, isLoading, error }: WeatherDisplayProps) 
   }
 
   /**
-   * Determina la clase de icono basada en el código de condición meteorológica
+   * Determina la clase de icono según el código meteorológico
    */
   const getWeatherIconClass = (code: number) => {
-    // Códigos de WeatherAPI.com: https://www.weatherapi.com/docs/weather_conditions.json
-    if (code === 1000) return 'sunny-icon'; // Soleado/Despejado
+    if (code === 1000) return 'sunny-icon'; // Soleado
     if (code >= 1003 && code <= 1030) return 'cloudy-icon'; // Nublado
     if (code >= 1063 && code <= 1201) return 'rainy-icon'; // Lluvia
     if (code >= 1204 && code <= 1225) return 'snowy-icon'; // Nieve
     if (code >= 1273 && code <= 1282) return 'stormy-icon'; // Tormenta
-    if (code >= 1135 && code <= 1147) return 'foggy-icon'; // Niebla/Bruma
+    if (code >= 1135 && code <= 1147) return 'foggy-icon'; // Niebla
     return '';
   };
 

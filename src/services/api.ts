@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { WeatherData, FootballField } from '../types';
+import { WeatherData, SportifField } from '../types';
 
 // Claves API desde variables de entorno
 const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -54,7 +54,7 @@ export const geocodeCity = async (cityName: string): Promise<GeocodingResult> =>
 };
 
 /**
- * Obtiene datos meteorológicos basados en coordenadas usando WeatherAPI.com
+ * Obtiene datos meteorológicos basados en coordenadas
  */
 export const getWeatherByLocation = async (lat: number, lon: number): Promise<WeatherData> => {
   try {
@@ -102,11 +102,9 @@ export const getWeatherByLocation = async (lat: number, lon: number): Promise<We
 
 /**
  * Busca campos de fútbol cercanos utilizando la API de Foursquare
- * Implementa múltiples estrategias de búsqueda en caso de fallos
  */
-export const getFootballFields = async (lat: number, lon: number, radius: number = 5): Promise<FootballField[]> => {
+export const getFootballFields = async (lat: number, lon: number, radius: number = 15): Promise<SportifField[]> => {
   try {
-    // Convertir radio de km a metros para Foursquare
     const radiusInMeters = radius * 1000;
     
     if (!FOOTBALL_FIELDS_API_KEY) {
@@ -115,7 +113,7 @@ export const getFootballFields = async (lat: number, lon: number, radius: number
     
     const apiKey = FOOTBALL_FIELDS_API_KEY.trim();
     
-    // Estrategia 1: Búsqueda directa por categorías específicas
+    // Búsqueda por categorías específicas
     try {
       const response = await axios.get(
         `https://api.foursquare.com/v3/places/search`,
@@ -139,42 +137,12 @@ export const getFootballFields = async (lat: number, lon: number, radius: number
         return mapFoursquareToFootballFields(response.data.results, lat, lon);
       }
     } catch (error) {
-      // Continuar con estrategia alternativa
+      console.error('Primary search failed:', error);
     }
     
-    // Estrategia 2: Usar autenticación con prefijo Bearer
+    // Búsqueda alternativa por términos relacionados con fútbol
     try {
-      const bearerResponse = await axios.get(
-        `https://api.foursquare.com/v3/places/search`,
-        {
-          params: {
-            ll: `${lat},${lon}`,
-            radius: radiusInMeters,
-            categories: '18041,18006',
-            limit: 50,
-            sort: 'DISTANCE',
-            fields: 'fsq_id,categories,geocodes,location,name,distance,tel,website'
-          },
-          headers: {
-            'Authorization': `Bearer ${apiKey}`,
-            'Accept': 'application/json'
-          }
-        }
-      );
-      
-      if (bearerResponse.data?.results?.length > 0) {
-        return mapFoursquareToFootballFields(bearerResponse.data.results, lat, lon);
-      }
-    } catch (error) {
-      // Continuar con estrategia alternativa
-    }
-    
-    // Estrategia 3: Búsqueda por términos relacionados con fútbol
-    try {
-      const searchTerms = [
-        'football', 'soccer', 'futbol', 'campo de futbol', 'terrain de football'
-      ];
-      
+      const searchTerms = ['football', 'soccer', 'futbol', 'campo de futbol'];
       let allResults: any[] = [];
       
       for (const term of searchTerms) {
@@ -213,60 +181,21 @@ export const getFootballFields = async (lat: number, lon: number, radius: number
         return mapFoursquareToFootballFields(uniqueResults, lat, lon);
       }
     } catch (error) {
-      // Continuar con estrategia alternativa
-    }
-    
-    // Estrategia 4: Búsqueda más amplia por categorías de deportes
-    try {
-      const categoryResponse = await axios.get(
-        `https://api.foursquare.com/v3/places/search`,
-        {
-          params: {
-            ll: `${lat},${lon}`,
-            radius: radiusInMeters * 3,
-            categories: '10000,10001,10045', // Recreación, Deportes, Actividades al aire libre
-            limit: 50,
-            sort: 'DISTANCE'
-          },
-          headers: {
-            'Authorization': apiKey,
-            'Accept': 'application/json'
-          }
-        }
-      );
-      
-      if (categoryResponse.data?.results?.length > 0) {
-        // Filtrar resultados potencialmente relevantes
-        const potentialFields = categoryResponse.data.results.filter((place: any) => {
-          const name = (place.name || '').toLowerCase();
-          const keywords = ['sport', 'field', 'pitch', 'futbol', 'soccer', 'football', 'deportivo', 'estadio'];
-          return keywords.some(keyword => name.includes(keyword));
-        });
-        
-        if (potentialFields.length > 0) {
-          return mapFoursquareToFootballFields(potentialFields, lat, lon);
-        }
-      }
-    } catch (error) {
-      // Estrategia final fallida
+      console.error('Secondary search failed:', error);
     }
     
     // No se encontraron campos
     return [];
   } catch (error) {
     console.error('Error fetching football fields:', error);
-    if (axios.isAxiosError(error) && error.response) {
-      console.error('API response status:', error.response.status);
-      console.error('API response data:', error.response.data);
-    }
     throw error;
   }
 };
 
 /**
- * Transforma los resultados de la API de Foursquare al formato interno de campos de fútbol
+ * Transforma los resultados de la API al formato interno de campos de fútbol
  */
-const mapFoursquareToFootballFields = (places: any[], defaultLat: number, defaultLon: number): FootballField[] => {
+const mapFoursquareToFootballFields = (places: any[], defaultLat: number, defaultLon: number): SportifField[] => {
   return places.map((place: any, index: number) => {
     return {
       id: (place.fsq_id || `field-${index + 1}`).toString(),
@@ -292,7 +221,7 @@ const mapFoursquareToFootballFields = (places: any[], defaultLat: number, defaul
 };
 
 /**
- * Determina la información de precios basada en los datos de Foursquare
+ * Determina la información de precios
  */
 const getPriceInfo = (priceData: any): string => {
   if (typeof priceData === 'object' && priceData.tier) {
@@ -308,7 +237,7 @@ const getPriceInfo = (priceData: any): string => {
 };
 
 /**
- * Determina el tipo de superficie del campo basado en metadatos disponibles
+ * Determina el tipo de superficie del campo
  */
 const getFieldSurfaceType = (place: any): string => {
   if (place.categories) {
@@ -335,7 +264,7 @@ const getFieldSurfaceType = (place: any): string => {
 };
 
 /**
- * Detecta si un campo tiene iluminación basado en su nombre
+ * Detecta si un campo tiene iluminación
  */
 const detectHasLighting = (place: any): boolean => {
   const name = place.name?.toLowerCase() || '';
@@ -343,7 +272,7 @@ const detectHasLighting = (place: any): boolean => {
 };
 
 /**
- * Obtiene la ubicación actual del usuario usando la API de Geolocalización del navegador
+ * Obtiene la ubicación actual del usuario
  */
 export const getCurrentLocation = (): Promise<{lat: number, lon: number}> => {
   return new Promise((resolve, reject) => {
@@ -386,7 +315,7 @@ export const getCurrentLocation = (): Promise<{lat: number, lon: number}> => {
 };
 
 /**
- * Obtiene el nombre de la ciudad a partir de coordenadas usando OpenStreetMap Nominatim
+ * Obtiene el nombre de la ciudad a partir de coordenadas
  */
 export const getCityFromCoordinates = async (lat: number, lon: number): Promise<GeocodingResult> => {
   try {
@@ -397,7 +326,7 @@ export const getCityFromCoordinates = async (lat: number, lon: number): Promise<
           lat: lat,
           lon: lon,
           format: 'json',
-          zoom: 10, // Nivel de zoom para ciudad
+          zoom: 10,
           addressdetails: 1
         },
         headers: {
@@ -411,7 +340,6 @@ export const getCityFromCoordinates = async (lat: number, lon: number): Promise<
     if (response.data) {
       const location = response.data;
       
-      // Extraer el nombre de lugar más específico disponible
       const placeName = 
         location.address?.city || 
         location.address?.town || 
@@ -433,7 +361,6 @@ export const getCityFromCoordinates = async (lat: number, lon: number): Promise<
     throw new Error('No se pudo determinar la ciudad');
   } catch (error) {
     console.error('Error getting city from coordinates:', error);
-    // Devolver objeto básico solo con las coordenadas
     return {
       name: 'Ubicación actual',
       lat: lat,

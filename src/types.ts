@@ -1,5 +1,5 @@
 /**
- * Interfaz para los datos meteorológicos de la API WeatherAPI
+ * Datos meteorológicos
  */
 export interface WeatherData {
   location: {
@@ -27,9 +27,9 @@ export interface WeatherData {
 }
 
 /**
- * Interfaz para la información de campos de fútbol obtenidos de Foursquare
+ * Información de campos de fútbol
  */
-export interface FootballField {
+export interface SportifField {
   id: string;
   FieldInfo: {
     Name: string;

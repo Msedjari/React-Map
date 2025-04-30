@@ -10,10 +10,9 @@ interface SearchBarProps {
 }
 
 /**
- * Componente de barra de búsqueda para ciudades con historial de búsquedas recientes
+ * Componente de barra de búsqueda con historial
  */
 const SearchBar = ({ onSearch, onLocationRequest }: SearchBarProps) => {
-  // Estados
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
@@ -21,13 +20,9 @@ const SearchBar = ({ onSearch, onLocationRequest }: SearchBarProps) => {
     return saved ? JSON.parse(saved) : [];
   });
   
-  // Referencias
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   
-  /**
-   * Detecta clics fuera del componente para cerrar el dropdown
-   */
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -46,16 +41,10 @@ const SearchBar = ({ onSearch, onLocationRequest }: SearchBarProps) => {
     };
   }, []);
   
-  /**
-   * Guarda las búsquedas recientes en localStorage
-   */
   useEffect(() => {
     localStorage.setItem('recentCitySearches', JSON.stringify(recentSearches));
   }, [recentSearches]);
   
-  /**
-   * Maneja el envío del formulario de búsqueda
-   */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
@@ -63,15 +52,10 @@ const SearchBar = ({ onSearch, onLocationRequest }: SearchBarProps) => {
     }
   };
   
-  /**
-   * Procesa la búsqueda y actualiza el historial
-   */
   const handleSearch = (city: string) => {
-    // Añadir a búsquedas recientes si no existe
     if (!recentSearches.includes(city)) {
       setRecentSearches(prev => [city, ...prev.slice(0, 4)]);
     } else {
-      // Mover al principio si ya existe
       setRecentSearches(prev => [
         city,
         ...prev.filter(item => item !== city)
@@ -83,25 +67,16 @@ const SearchBar = ({ onSearch, onLocationRequest }: SearchBarProps) => {
     onSearch(city);
   };
   
-  /**
-   * Maneja la selección de una búsqueda reciente
-   */
   const handleRecentSelect = (city: string) => {
     handleSearch(city);
   };
   
-  /**
-   * Limpia el historial de búsquedas recientes
-   */
   const clearRecentSearches = (e: React.MouseEvent) => {
     e.stopPropagation();
     setRecentSearches([]);
     localStorage.removeItem('recentCitySearches');
   };
 
-  /**
-   * Maneja la solicitud de ubicación actual
-   */
   const handleLocationRequest = () => {
     if (onLocationRequest) {
       onLocationRequest();

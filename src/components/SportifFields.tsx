@@ -1,14 +1,14 @@
-import { FootballField } from '../types';
+import { SportifField } from '../types';
 import '../components/components.css';
 
 /**
  * Props para el componente de lista de campos de deportes
  */
 interface FootballFieldsListProps {
-  fields: FootballField[];
+  fields: SportifField[];
   isLoading: boolean;
   error: string | null;
-  onFieldSelect: (field: FootballField) => void;
+  onFieldSelect: (field: SportifField) => void;
 }
 
 /**
@@ -29,7 +29,6 @@ const FootballFieldsList = ({
   error,
   onFieldSelect
 }: FootballFieldsListProps) => {
-  // Estado de carga
   if (isLoading) {
     return (
       <div className="fields-list loading">
@@ -39,7 +38,6 @@ const FootballFieldsList = ({
     );
   }
 
-  // Estado de error
   if (error) {
     return (
       <div className="fields-list error">
@@ -53,7 +51,6 @@ const FootballFieldsList = ({
     );
   }
 
-  // Estado sin campos encontrados
   if (fields.length === 0) {
     return (
       <div className="fields-list empty">
@@ -66,7 +63,6 @@ const FootballFieldsList = ({
     );
   }
 
-  // Renderizar la lista de campos
   return (
     <div className="fields-list">
       <h3>
@@ -87,7 +83,6 @@ const FootballFieldsList = ({
             className="field-item"
             onClick={() => onFieldSelect(field)}
           >
-            {/* Cabecera del campo */}
             <div className="field-header">
               <h4>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -106,7 +101,6 @@ const FootballFieldsList = ({
               </div>
             </div>
             
-            {/* Dirección del campo */}
             <div className="field-address">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -118,7 +112,6 @@ const FootballFieldsList = ({
               </div>
             </div>
             
-            {/* Características del campo */}
             <div className="field-features">
               {field.Features.map((feature: FeatureItem, idx: number) => (
                 <span key={idx} className="feature-type">
@@ -131,7 +124,6 @@ const FootballFieldsList = ({
               ))}
             </div>
             
-            {/* Detalles técnicos del campo */}
             <div className="field-details">
               <div className="surface-type">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -171,7 +163,6 @@ const FootballFieldsList = ({
               </div>
             </div>
             
-            {/* Información de precio */}
             <div className="cost-info">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="1" x2="12" y2="23"></line>
